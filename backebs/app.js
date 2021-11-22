@@ -7,7 +7,7 @@ var database = require("./config/database");
 var auth = require("./auth/main_auth");
 var cors = require("cors");
 
-var empleadosRouter = require("./routes/empleados.router");
+var eventosRouter = require("./routes/eventos.router");
 var usuariosRouter = require("./routes/usuarios.router");
 
 var app = express();
@@ -17,15 +17,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
 app.use(cors());
 
-// Mongo Connection
+//Mongo connection
 database.mongoConnect();
 
-// Router
 app.use("/usuarios", usuariosRouter);
-// app.use(auth);
-app.use("/empleados", empleadosRouter);
+
+app.use(auth);
+
+//Router
+app.use("/eventos", eventosRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -40,7 +43,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.send("error");
+  res.render("error");
 });
 
 module.exports = app;
